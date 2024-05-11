@@ -1,0 +1,76 @@
+// mavros_msgs::State current_state;
+// void state_cb(const mavros_msgs::State::ConstPtr& msg){
+//     current_state = *msg;
+//     std::cout<<current_state<<"This"<<std::endl;
+// }
+//float probability_of_collision_,steering_angle_;
+
+// void deepNetworkCallback(const perception_px4::CNN_out::ConstPtr& msg)
+// {
+
+//   probability_of_collision_ = msg->collision_prob;
+//   ROS_INFO("%f",msg->collision_prob);
+//   steering_angle_ = msg->steering_angle;
+//   // Output modulation
+//   if (steering_angle_ < -1.0) { steering_angle_ = -1.0;}
+//   if (steering_angle_ > 1.0) { steering_angle_ = 1.0;}
+
+// }
+
+
+ //while(ros::ok() && !cnn_publisher.current_state.connected){
+      //  ros::spinOnce();
+        //rate.sleep();
+    //}
+
+  //while(ros::ok()){
+        //std::cout<<current_state<<"This"<<std::endl;
+        //std::cout<<probability_of_collision_<<std::endl;
+        //std::cout<<steering_angle_<<"steering"<<std::endl;
+    //}
+
+   //ros::Subscriber state_sub1 = nh.subscribe<mavros_msgs::State>
+      //      ("mavros/state", 10, state_cb);
+    //ros::Subscriber state_sub = nh.subscribe("/cnn_predictions", 1, &deepNetworkCallback);
+    //std::cout<<"he;;"<<std::endl;
+    //ros::Rate rate(20.0);
+    
+    
+    
+    // yaw_angle = (1-alpha_yaw_ )*yaw_angle + alpha_yaw_ *steering_angle_;
+    //pos.velocity.x = desired_forward_velocity_;
+    //pos.velocity.y =0.0;
+    //pos.yaw_rate =0.0;
+    //pos.position.z =1.5;
+    //pos.velocity.z = 0.0;
+    //pos.yaw =yaw_angle;//steering_angle_;
+    //set_vel_pub.publish(pos);
+    
+     // desired_angular_velocity_ = angular_velocity_calculator(steering_angle_);
+     
+     
+/***double px4_control::angular_velocity_calculator(float &steering_angle_){
+    // Low pass filter the angular_velocity (Remeber to tune the bebop angular velocity parameters)
+    
+    return desired_angular_velocity_;
+}   ***/
+    
+    
+      bitmask_set();
+    pos.position.z =1.0;
+    
+    void px4_control::bitmask_set(){
+    pos.coordinate_frame = mavros_msgs::PositionTarget::FRAME_BODY_NED;
+    pos.type_mask =  mavros_msgs::PositionTarget::IGNORE_PX  |mavros_msgs::PositionTarget::IGNORE_PY 
+                    |mavros_msgs::PositionTarget::IGNORE_AFX |mavros_msgs::PositionTarget::IGNORE_AFY 
+                    |mavros_msgs::PositionTarget::IGNORE_AFZ ;//|mavros_msgs::PositionTarget::IGNORE_YAW_RATE;
+                    //|mavros_msgs::PositionTarget::IGNORE_YAW ;
+                    
+                     void bitmask_set();
+    
+ 
+//pos_msg.velocity.x = 1.0;//vx;
+    //pos_msg.velocity.y = 1.0;//vy;
+    //pos_msg.position.z = 1.5;
+    //pos_msg.yaw_rate = desired_angular_velocity_;
+    //set_vel_pub.publish(pos_msg);

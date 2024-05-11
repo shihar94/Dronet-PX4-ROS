@@ -1,0 +1,168 @@
+//  offb_set_mode.request.custom_mode = "OFFBOARD";
+
+    
+   // arm_cmd.request.value = true;
+   
+   
+    //for(int i = 100; ros::ok() && i > 0; --i){
+       // set_vel_pub.publish(pos);
+        //ros::spinOnce();
+        //rate.sleep();
+    //}
+//ros::Time last_request = ros::Time::now();
+    /***while(ros::ok()){
+     if( current_state.mode != "OFFBOARD" &&(ros::Time::now() - last_request > ros::Duration(5.0))){
+            if( set_mode_client.call(offb_set_mode) &&offb_set_mode.response.mode_sent){
+                ROS_INFO("Offboard enabled");
+            }
+            last_request = ros::Time::now();
+        } else {
+            if( !current_state.armed &&(ros::Time::now() - last_request > ros::Duration(5.0))){
+                if( arming_client.call(arm_cmd) &&arm_cmd.response.success){
+                    ROS_INFO("Vehicle armed");
+                }
+                last_request = ros::Time::now();
+            }
+        }
+
+        geometry_msgs::TwistStamped cmd_vel_msg;
+        
+    
+    // Low pass filter the velocity and integrate it to get the position
+        vel_calc(desired_forward_velocity_,desired_angular_velocity_);
+   
+        cmd_vel_msg.twist.angular.z = desired_angular_velocity_;
+        cmd_vel_msg.twist.linear.x = desired_forward_velocity_;
+    pos.velocity.x = desired_forward_velocity_;
+        euler_conversion(yaw_rate,desired_angular_velocity_);
+       // pos.yaw =2000*yaw_rate;// desired_angular_velocity_;
+        pos.position.z =1.5;
+        set_vel_pub.publish(pos);
+        vel_pub.publish(cmd_vel_msg);
+       std::cout<<desired_angular_velocity_<<" Desired Forward Velocity "<<std::endl;
+       std::cout<<desired_angular_velocity_<<" Desired Angular Velociy" <<std::endl;
+    }***/
+    
+    
+//void px4_control::velocity_publisher(){
+    //required hyperparameters to tune 
+    
+    //double alpha_velocity_ = 0.4;
+    //double alpha_yaw_ = 0.9;
+    //double critical_prob_coll_= 1.3;
+
+
+    
+    //pos.velocity.y = 0.0f;
+    //pos.velocity.z = 0.0f;
+    
+    
+    
+    //geometry_msgs::TwistStamped cmd_vel_msg;
+    //cmd_vel_msg.twist.linear.x =desired_forward_velocity_;
+    //cmd_vel_msg.twist.angular.z = desired_angular_velocity_;
+    //cmd_vel_msg.twist.linear.z = 0.0;
+    
+    //vel_pub.publish(cmd_vel_msg);
+
+    
+    
+        /***double desired_forward_velocity_m = (1.0 -  proability_of_collision_) * max_forward_index_;
+    if (desired_forward_velocity_m <= 0.0)
+    {
+      ROS_INFO("Detected negative forward velocity! Drone will now stop!");
+      desired_forward_velocity_m  = 0;
+    }
+    
+    // Low pass filter the velocity and integrate it to get the position
+    
+    desired_forward_velocity_ = (1.0 - alpha_velocity_) * desired_forward_velocity_+ alpha_velocity_ * desired_forward_velocity_m;
+    
+    if (desired_forward_velocity_ < ((1 - critical_prob_coll_) * max_forward_index_))
+    {
+      desired_forward_velocity_ = 0.0;
+    }
+    
+    desired_angular_velocity_ = (1.0 - alpha_yaw_) * desired_angular_velocity_ + alpha_yaw_ * steering_angle_;**/
+     //ros::Time last_request = ros::Time::now();
+
+  //ros::Time time_start = ros::Time::now();
+   // while(ros::ok()){
+     
+    
+       // pos.position.z =1.0;
+   // pos.velocity.x = 1.0;//desired_forward_velocity_;
+
+   // set_vel_pub.publish(pos);
+  //  }
+    
+    
+          //  std::cout<<desired_forward_velocity_<<" Desired Forward Velocity "<<std::endl;
+           // std::cout<<desired_angular_velocity_<<" Desired Angular Velociy" <<std::endl;
+
+    
+
+
+
+    
+//}//std::cout<<"hello"<<std::endl;    
+    
+    
+    
+    
+    
+    void px4_control::vel_calc(double &desired_forward_velocity_,double &desired_angular_velocity_){
+    
+    
+    double desired_forward_velocity_m = (1.0 -  proability_of_collision_) * max_forward_index_;
+    if (desired_forward_velocity_m <= 0.0)
+    {
+      ROS_INFO("Detected negative forward velocity! Drone will now stop!");
+      desired_forward_velocity_m  = 0;
+    }
+
+    desired_forward_velocity_ = (1.0 - alpha_velocity_) * desired_forward_velocity_+ alpha_velocity_ * desired_forward_velocity_m;
+    
+    if (desired_forward_velocity_ < ((1 - critical_prob_coll_) * max_forward_index_))
+    {
+      desired_forward_velocity_ = 0.0;
+    }
+
+    desired_angular_velocity_ = (1.0 - alpha_yaw_) * desired_angular_velocity_ + alpha_yaw_ * steering_angle_;
+
+}
+
+    
+    
+    
+    void px4_control::odom_callback(const nav_msgs::Odometry::ConstPtr& msg){
+    odom_msg.pose.pose.orientation.x = msg->pose.pose.orientation.x;
+    odom_msg.pose.pose.orientation.y = msg->pose.pose.orientation.y;
+    odom_msg.pose.pose.orientation.z = msg->pose.pose.orientation.z;
+    odom_msg.pose.pose.orientation.w = msg->pose.pose.orientation.w;
+
+   
+}
+
+void px4_control::euler_conversion(double &yaw_rate,double &desired_angular_velocity_){
+     theta = atan2(2*(odom_msg.pose.pose.orientation.x*odom_msg.pose.pose.orientation.w+odom_msg.pose.pose.orientation.z*odom_msg.pose.pose.orientation.y),1-2*((odom_msg.pose.pose.orientation.z*odom_msg.pose.pose.orientation.z)+(odom_msg.pose.pose.orientation.w*odom_msg.pose.pose.orientation.w)));
+     phi   = atan2(2*(odom_msg.pose.pose.orientation.x*odom_msg.pose.pose.orientation.y+odom_msg.pose.pose.orientation.z*odom_msg.pose.pose.orientation.w),1-2*((odom_msg.pose.pose.orientation.y*odom_msg.pose.pose.orientation.y)+(odom_msg.pose.pose.orientation.z*odom_msg.pose.pose.orientation.z)));
+
+    yaw_rate = desired_angular_velocity_*cos(phi)/cos(theta);
+
+    
+    
+    
+    
+if(vx<0){
+        cmd_msg.twist.linear.x = vx;
+    }else{
+        cmd_msg.twist.linear.x = vx;
+    }
+
+    if(vy<0){
+        cmd_msg.twist.linear.y =  vy;
+    }else{
+        cmd_msg.twist.linear.y = vy;
+    }
+    
